@@ -220,12 +220,11 @@ function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
 
           // set parameters.
           $d_amount = CRM_Utils_Money::format($option['discount_applied'], $currency['defaultCurrency']);
-          $d_seperator = ts('discount', array('domain' => 'be.ctrl.discounter'));
           $m_label = $pricefield['label'];
           $m_amount = CRM_Utils_Money::format($pricefield['amount'], $currency['defaultCurrency']);
 
           // set new label.
-          $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label $d_seperator ($d_amount)";
+          $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label ($d_amount)";
         }
       }
     }
