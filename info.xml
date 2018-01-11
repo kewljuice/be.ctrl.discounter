@@ -16,12 +16,15 @@
   </urls>
   <releaseDate>2017-12-15</releaseDate>
   <version>1.0</version>
-  <develStage>alpha</develStage>
+  <develStage>stable</develStage>
   <compatibility>
     <ver>4.7</ver>
   </compatibility>
-  <comments>This is a new, undeveloped module</comments>
+  <comments>Stable</comments>
   <civix>
     <namespace>CRM/ctrl/discounter</namespace>
   </civix>
+  <requires>
+    <ext>org.civicrm.module.cividiscount</ext>
+  </requires>
 </extension>
