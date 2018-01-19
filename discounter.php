@@ -143,6 +143,7 @@ function discounter_civicrm_alterContent(&$content, $context, $tplName, &$object
       $replace = '<span class="crm-price-amount-label-separator">&nbsp;=&nbsp;</span>';
       $content = str_replace($find, $replace, $content);
     }
+
     // Replace '-' with '=' for price amount label separator for events.
     if ($tplName == 'CRM/Event/Form/Registration/Register.tpl') {
       $find = '<span class="crm-price-amount-label-separator">&nbsp;-&nbsp;</span>';
@@ -166,38 +167,58 @@ function discounter_civicrm_alterContent(&$content, $context, $tplName, &$object
  */
 function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
 
-  // alter options for 'contribution' pages only.
+  // Alter options for 'contribution' pages only.
   if (get_class($form) == 'CRM_Contribute_Form_Contribution_Main') {
-
-    // alter options for 'membership' pages only.
+    // Alter options for 'membership' pages only.
     if ($pageType == 'membership') {
-
-      // fetch price_set(s).
+      // Fetch price_set(s).
       $fields = reset($amount);
       $fields_id = $fields['id'];
       $options = $amount[$fields_id]['options'];
-
-      // loop price_set(s).
+      // Loop price_set(s).
       foreach ($options as $key => $option) {
-
-        // only alter when discount is applied.
+        // Only alter when discount is applied.
         if (isset($option['discount_applied'])) {
-
-          // fetch default currency.
+          // Fetch default currency.
           $currency = civicrm_api3('Setting', 'getSingle', ['return' => ["defaultCurrency"]]);
-
-          // fetch price_field value.
+          // Fetch price_field value.
           $pricefield = civicrm_api3('PriceFieldValue', 'getsingle', ['id' => $option['id']]);
-
-          // get discount label.
+          // Get discount label.
           $d_label = $option['discount_description'];
-
-          // set parameters.
+          // Set parameters.
           $d_amount = CRM_Utils_Money::format($option['discount_applied'], $currency['defaultCurrency']);
           $m_label = $pricefield['label'];
           $m_amount = CRM_Utils_Money::format($pricefield['amount'], $currency['defaultCurrency']);
+          // Set new label.
+          $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label ($d_amount)";
+        }
+      }
+    }
+  }
 
-          // set new label.
+  // Alter options for 'event' pages only.
+  if (get_class($form) == 'CRM_Event_Form_Registration_Register') {
+    // Alter options for 'membership' pages only.
+    if ($pageType == 'event') {
+      // Fetch price_set(s).
+      $fields = reset($amount);
+      $fields_id = $fields['id'];
+      $options = $amount[$fields_id]['options'];
+      // Loop price_set(s).
+      foreach ($options as $key => $option) {
+        // Only alter when discount is applied.
+        if (isset($option['discount_applied'])) {
+          // Fetch default currency.
+          $currency = civicrm_api3('Setting', 'getSingle', ['return' => ["defaultCurrency"]]);
+          // Fetch price_field value.
+          $pricefield = civicrm_api3('PriceFieldValue', 'getsingle', ['id' => $option['id']]);
+          // Get discount label.
+          $d_label = $option['discount_description'];
+          // Set parameters.
+          $d_amount = CRM_Utils_Money::format($option['discount_applied'], $currency['defaultCurrency']);
+          $m_label = $pricefield['label'];
+          $m_amount = CRM_Utils_Money::format($pricefield['amount'], $currency['defaultCurrency']);
+          // Set new label.
           $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label ($d_amount)";
         }
       }
