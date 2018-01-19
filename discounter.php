@@ -123,58 +123,32 @@ function discounter_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 /**
- * Implements hook_civicrm_buildForm().
+ * Implements hook_civicrm_alterContent().
  *
- * Set a default value for an event price set field.
- *
- * @param string $formName
- * @param CRM_Core_Form $form
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_buildForm/
+ * @param $content
+ *   Previously generated content.
+ * @param $context
+ *   Context of content - page or form.
+ * @param $tplName
+ *   The file name of the tpl.
+ * @param $object
+ *   A reference to the page or form object.
  *
  */
-function discounter_civicrm_buildForm($formName, &$form) {
-  // alter options for 'contribution' pages only.
-  if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
-
-    /*
-      // Quick fetch values.
-      $values = $form->getVar('_priceSet');
-
-      // Alter values.
-      $fields = reset($values['fields']);
-      $fields_id = $fields['id'];
-      $options = $values['fields'][$fields_id]['options'];
-      foreach ($options as $key => $option) {
-        // only alter when discount is applied.
-        if (isset($option['discount_applied'])) {
-          $values['fields'][$fields_id]['options'][$key]['label'] = 'blabla';
-        }
-      }
-      $values['fields'][4]['label'] = "test";
-
-      // Quick save values.
-      $form->setVar('_priceSet', $values);
-    */
-
-    /*
-      // Quick fetch values.
-      $values = $form->getVar('_values');
-
-      // Alter values.
-      $fee = reset($values['fee']);
-      $fee_id = $fee['id'];
-      $options = $values['fee'][$fee_id]['options'];
-      foreach ($options as $key => $option) {
-        // only alter when discount is applied.
-        if (isset($option['discount_applied'])) {
-          $values['fee'][$fee_id]['options'][$key]['label'] = 'blabla';
-        }
-      }
-
-      // Quick save values.
-      $form->setVar('_values', $values);
-    */
+function discounter_civicrm_alterContent(&$content, $context, $tplName, &$object) {
+  if ($context == 'form') {
+    // Replace '-' with '=' for price amount label separator for memberships.
+    if ($tplName == 'CRM/Contribute/Form/Contribution/Main.tpl') {
+      $find = '<span class="crm-price-amount-label-separator">&nbsp;-&nbsp;</span>';
+      $replace = '<span class="crm-price-amount-label-separator">&nbsp;=&nbsp;</span>';
+      $content = str_replace($find, $replace, $content);
+    }
+    // Replace '-' with '=' for price amount label separator for events.
+    if ($tplName == 'CRM/Event/Form/Registration/Register.tpl') {
+      $find = '<span class="crm-price-amount-label-separator">&nbsp;-&nbsp;</span>';
+      $replace = '<span class="crm-price-amount-label-separator">&nbsp;=&nbsp;</span>';
+      $content = str_replace($find, $replace, $content);
+    }
   }
 }
 
