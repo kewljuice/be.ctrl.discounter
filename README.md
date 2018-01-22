@@ -23,3 +23,8 @@ Re-formats price_set label(s)
 
 - The next step is enabling the extension which can be done from<br> 
 ```"Administer -> System Settings -> Manage CiviCRM Extensions".```
+
+## Exclude discount input from event registrations
+
+The exclude setting is available at "Administer -> CTRL -> Discounter" or yoursite.org/civicrm/ctrl/discounter.
+
