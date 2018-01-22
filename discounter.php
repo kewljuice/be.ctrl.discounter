@@ -53,6 +53,7 @@ function discounter_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function discounter_civicrm_enable() {
+  CRM_Core_BAO_Setting::setItem(FALSE, 'discounter', 'discounter-exclude');
   _discounter_civix_civicrm_enable();
 }
 
@@ -62,6 +63,7 @@ function discounter_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function discounter_civicrm_disable() {
+  CRM_Core_BAO_Setting::setItem('', 'discounter', 'discounter-exclude');
   _discounter_civix_civicrm_disable();
 }
 
@@ -120,6 +122,27 @@ function discounter_civicrm_angularModules(&$angularModules) {
  */
 function discounter_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _discounter_civix_civicrm_alterSettingsFolders($metaDataFolders);
+}
+
+/**
+ * Implements hook_civicrm_buildForm().
+ *
+ * @param string $formName
+ * @param CRM_Core_Form $form
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_buildForm
+ */
+function discounter_civicrm_buildForm($formName, &$form) {
+  if ($formName == 'CRM_Event_Form_Registration_Register') {
+    if ($form->elementExists('discountcode')) {
+      // Check 'discounter-exclude' value if we need to exclude discount input.
+      $exclude = CRM_Core_BAO_Setting::getItem('discounter', 'discounter-exclude');
+      if(isset($exclude) && $exclude) {
+        $form->removeElement('discountcode');
+        $form->removeElement('_qf_Register_reload');
+      }
+    }
+  }
 }
 
 /**
@@ -224,4 +247,66 @@ function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
       }
     }
   }
+}
+
+/**
+ * Implements hook_civicrm_navigationMenu().
+ *
+ * @param array $params
+ */
+function discounter_civicrm_navigationMenu(&$params) {
+  //  Get the maximum key of $params.
+  $nextKey = (max(array_keys($params)));
+  // Check for Administer navID.
+  $AdministerKey = '';
+  foreach ($params as $k => $v) {
+    if ($v['attributes']['name'] == 'Administer') {
+      $AdministerKey = $k;
+    }
+  }
+  // Check for Parent navID.
+  foreach ($params[$AdministerKey]['child'] as $k => $v) {
+    if ($v['attributes']['name'] == 'CTRL') {
+      $parentKey = $v['attributes']['navID'];
+    }
+  }
+  // If Parent navID doesn't exist create.
+  if (!isset($parentKey)) {
+    // Create parent array
+    $parent = [
+      'attributes' => [
+        'label' => 'CTRL',
+        'name' => 'CTRL',
+        'url' => NULL,
+        'permission' => 'access CiviCRM',
+        'operator' => NULL,
+        'separator' => 0,
+        'parentID' => $AdministerKey,
+        'navID' => $nextKey,
+        'active' => 1,
+      ],
+      'child' => NULL,
+    ];
+    // Add parent to Administer
+    $params[$AdministerKey]['child'][$nextKey] = $parent;
+    $parentKey = $nextKey;
+    $nextKey++;
+  }
+  // Create child(s) array
+  $child = [
+    'attributes' => [
+      'label' => 'Discounter',
+      'name' => 'ctrl_discounter',
+      'url' => 'civicrm/ctrl/discounter',
+      'permission' => 'access CiviCRM',
+      'operator' => NULL,
+      'separator' => 0,
+      'parentID' => $parentKey,
+      'navID' => $nextKey,
+      'active' => 1,
+    ],
+    'child' => NULL,
+  ];
+  // Add child(s) for this extension
+  $params[$AdministerKey]['child'][$parentKey]['child'][$nextKey] = $child;
 }
