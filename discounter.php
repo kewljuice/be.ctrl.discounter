@@ -137,7 +137,7 @@ function discounter_civicrm_buildForm($formName, &$form) {
     if ($form->elementExists('discountcode')) {
       // Check 'discounter-exclude' value if we need to exclude discount input.
       $exclude = CRM_Core_BAO_Setting::getItem('discounter', 'discounter-exclude');
-      if(isset($exclude) && $exclude) {
+      if (isset($exclude) && $exclude) {
         $form->removeElement('discountcode');
         $form->removeElement('_qf_Register_reload');
       }
@@ -255,8 +255,6 @@ function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
  * @param array $params
  */
 function discounter_civicrm_navigationMenu(&$params) {
-  //  Get the maximum key of $params.
-  $nextKey = (max(array_keys($params)));
   // Check for Administer navID.
   $AdministerKey = '';
   foreach ($params as $k => $v) {
@@ -266,7 +264,7 @@ function discounter_civicrm_navigationMenu(&$params) {
   }
   // Check for Parent navID.
   foreach ($params[$AdministerKey]['child'] as $k => $v) {
-    if ($v['attributes']['name'] == 'CTRL') {
+    if ($k == 'CTRL') {
       $parentKey = $v['attributes']['navID'];
     }
   }
@@ -282,15 +280,13 @@ function discounter_civicrm_navigationMenu(&$params) {
         'operator' => NULL,
         'separator' => 0,
         'parentID' => $AdministerKey,
-        'navID' => $nextKey,
+        'navID' => 'CTRL',
         'active' => 1,
       ],
       'child' => NULL,
     ];
     // Add parent to Administer
-    $params[$AdministerKey]['child'][$nextKey] = $parent;
-    $parentKey = $nextKey;
-    $nextKey++;
+    $params[$AdministerKey]['child']['CTRL'] = $parent;
   }
   // Create child(s) array
   $child = [
@@ -302,11 +298,11 @@ function discounter_civicrm_navigationMenu(&$params) {
       'operator' => NULL,
       'separator' => 0,
       'parentID' => $parentKey,
-      'navID' => $nextKey,
+      'navID' => 'discounter',
       'active' => 1,
     ],
     'child' => NULL,
   ];
   // Add child(s) for this extension
-  $params[$AdministerKey]['child'][$parentKey]['child'][$nextKey] = $child;
+  $params[$AdministerKey]['child']['CTRL']['child']['discounter'] = $child;
 }
