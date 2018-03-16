@@ -265,7 +265,7 @@ function discounter_civicrm_navigationMenu(&$params) {
   // Check for Parent navID.
   foreach ($params[$AdministerKey]['child'] as $k => $v) {
     if ($k == 'CTRL') {
-      $parentKey = $v['attributes']['navID'];
+      $parentKey = $k;
     }
   }
   // If Parent navID doesn't exist create.
@@ -297,7 +297,7 @@ function discounter_civicrm_navigationMenu(&$params) {
       'permission' => 'access CiviCRM',
       'operator' => NULL,
       'separator' => 0,
-      'parentID' => $parentKey,
+      'parentID' => 'CTRL',
       'navID' => 'discounter',
       'active' => 1,
     ],
