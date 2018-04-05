@@ -220,8 +220,8 @@ function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
   }
 
   // Alter options for 'event' pages only.
-  if (get_class($form) == 'CRM_Event_Form_Registration_Register') {
-    // Alter options for 'membership' pages only.
+  if (get_class($form) == 'CRM_Event_Form_Registration_Register' || get_class($form) == 'CRM_Event_Form_Registration_AdditionalParticipant') {
+    // Alter options for 'event' pages only.
     if ($pageType == 'event') {
       // Fetch price_set(s).
       $fields = reset($amount);
