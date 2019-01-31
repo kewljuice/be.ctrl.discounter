@@ -223,26 +223,27 @@ function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
   if (get_class($form) == 'CRM_Event_Form_Registration_Register' || get_class($form) == 'CRM_Event_Form_Registration_AdditionalParticipant') {
     // Alter options for 'event' pages only.
     if ($pageType == 'event') {
-      // Fetch price_set(s).
-      $fields = reset($amount);
-      $fields_id = $fields['id'];
-      $options = $amount[$fields_id]['options'];
-      // Loop price_set(s).
-      foreach ($options as $key => $option) {
-        // Only alter when discount is applied.
-        if (isset($option['discount_applied'])) {
-          // Fetch default currency.
-          $currency = civicrm_api3('Setting', 'getSingle', ['return' => ["defaultCurrency"]]);
-          // Fetch price_field value.
-          $pricefield = civicrm_api3('PriceFieldValue', 'getsingle', ['id' => $option['id']]);
-          // Get discount label.
-          $d_label = $option['discount_description'];
-          // Set parameters.
-          $d_amount = CRM_Utils_Money::format($option['discount_applied'], $currency['defaultCurrency']);
-          $m_label = $pricefield['label'];
-          $m_amount = CRM_Utils_Money::format($pricefield['amount'], $currency['defaultCurrency']);
-          // Set new label.
-          $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label ($d_amount)";
+      // Loop all price_set(s)
+      foreach ($amount as $fields) {
+        $fields_id = $fields['id'];
+        $options = $amount[$fields_id]['options'];
+        // Loop price_set(s) options.
+        foreach ($options as $key => $option) {
+          // Only alter when discount is applied.
+          if (isset($option['discount_applied'])) {
+            // Fetch default currency.
+            $currency = civicrm_api3('Setting', 'getSingle', ['return' => ["defaultCurrency"]]);
+            // Fetch price_field value.
+            $pricefield = civicrm_api3('PriceFieldValue', 'getsingle', ['id' => $option['id']]);
+            // Get discount label.
+            $d_label = $option['discount_description'];
+            // Set parameters.
+            $d_amount = CRM_Utils_Money::format($option['discount_applied'], $currency['defaultCurrency']);
+            $m_label = $pricefield['label'];
+            $m_amount = CRM_Utils_Money::format($pricefield['amount'], $currency['defaultCurrency']);
+            // Set new label.
+            $amount[$fields_id]['options'][$key]['label'] = "$m_label ($m_amount) - $d_label ($d_amount)";
+          }
         }
       }
     }
