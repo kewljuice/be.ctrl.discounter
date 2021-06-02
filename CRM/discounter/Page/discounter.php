@@ -30,7 +30,7 @@ class CRM_discounter_Page_discounter extends CRM_Core_Page {
       $form .= "<input type='radio' id='ds_true' name='discounterSettings' value='1'><label for='ds_true'>Exclude discount input from event registration pages</label><br>";
       $form .= "<input type='radio' id='ds_false' name='discounterSettings' value='0' checked><label for='ds_false'>Include discount input from event registration pages</label><br>";
     }
-    $form .= "<div class='crm-submit-buttons'><span class='crm-button'><input class='crm-form-submit default' type='submit' value='Submit'></span></div>";
+    $form .= "<div class='crm-submit-buttons'><input class='crm-form-submit default' type='submit' value='Submit'></span></div>";
     $form .= "</form>";
     // Assign form.
     $this->assign('content', $form);
