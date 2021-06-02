@@ -53,7 +53,7 @@ function discounter_civicrm_uninstall() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function discounter_civicrm_enable() {
-  CRM_Core_BAO_Setting::setItem(FALSE, 'discounter', 'discounter-exclude');
+  Civi::settings()->set('discounter-exclude', FALSE);
   _discounter_civix_civicrm_enable();
 }
 
@@ -63,7 +63,7 @@ function discounter_civicrm_enable() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
 function discounter_civicrm_disable() {
-  CRM_Core_BAO_Setting::setItem('', 'discounter', 'discounter-exclude');
+  Civi::settings()->set('discounter-exclude', '');
   _discounter_civix_civicrm_disable();
 }
 
@@ -136,7 +136,7 @@ function discounter_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Event_Form_Registration_Register') {
     if ($form->elementExists('discountcode')) {
       // Check 'discounter-exclude' value if we need to exclude discount input.
-      $exclude = CRM_Core_BAO_Setting::getItem('discounter', 'discounter-exclude');
+      $exclude = Civi::settings()->set('discounter-exclude');
       if (isset($exclude) && $exclude) {
         $form->removeElement('discountcode');
         $form->removeElement('_qf_Register_reload');

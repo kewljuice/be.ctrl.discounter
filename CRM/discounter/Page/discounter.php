@@ -8,15 +8,15 @@ class CRM_discounter_Page_discounter extends CRM_Core_Page {
     CRM_Utils_System::setTitle(ts('Discounter'));
     $url = CRM_Utils_System::baseURL() . 'civicrm/ctrl/discounter';
     $this->assign('url', $url);
-    $exclude = CRM_Core_BAO_Setting::getItem('discounter', 'discounter-exclude');
+    $exclude = Civi::settings()->get('discounter-exclude');
     // On form action.
     if (isset($_REQUEST['discounterSettings']) && $_REQUEST['discounterSettings'] == 1) {
       $exclude = TRUE;
-      CRM_Core_BAO_Setting::setItem($exclude, 'discounter', 'discounter-exclude');
+      Civi::settings()->set('discounter-exclude', $exclude);
     }
     if (isset($_REQUEST['discounterSettings']) && $_REQUEST['discounterSettings'] == 0) {
       $exclude = FALSE;
-      CRM_Core_BAO_Setting::setItem($exclude, 'discounter', 'discounter-exclude');
+      Civi::settings()->set('discounter-exclude', $exclude);
     }
     // Build form.
     $form = "";
