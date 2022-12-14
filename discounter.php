@@ -264,13 +264,25 @@ function discounter_civicrm_navigationMenu(&$params) {
     }
   }
   // Check for Parent navID.
+  $parentKey = '';
   foreach ($params[$AdministerKey]['child'] as $k => $v) {
-    if ($k == 'CTRL') {
+    if (
+      isset($v['attributes']) &&
+      isset($v['attributes']['label']) &&
+      $v['attributes']['label'] === 'CTRL'
+    ) {
       $parentKey = $k;
+      // Check if the key is the string CTRL in which case we should rebuild it to have an integer key.
+      if ($parentKey === 'CTRL') {
+        $params[$AdministerKey]['child'][] = $params[$AdministerKey]['child']['CTRL'];
+        unset($params[$AdministerKey]['child']['CTRL']);
+        discounter_civicrm_navigationMenu($params);
+      }
+      break;
     }
   }
   // If Parent navID doesn't exist create.
-  if (!isset($parentKey)) {
+  if ($parentKey === '') {
     // Create parent array
     $parent = [
       'attributes' => [
@@ -281,13 +293,15 @@ function discounter_civicrm_navigationMenu(&$params) {
         'operator' => NULL,
         'separator' => 0,
         'parentID' => $AdministerKey,
-        'navID' => 'CTRL',
         'active' => 1,
       ],
       'child' => NULL,
     ];
     // Add parent to Administer
-    $params[$AdministerKey]['child']['CTRL'] = $parent;
+    $params[$AdministerKey]['child'][] = $parent;
+    $created = array_key_last($params[$AdministerKey]['child']);
+    $params[$AdministerKey]['child'][$created]['attributes']['navID'] = $created;
+    $parentKey = $created;
   }
   // Create child(s) array
   $child = [
@@ -298,12 +312,12 @@ function discounter_civicrm_navigationMenu(&$params) {
       'permission' => 'access CiviCRM',
       'operator' => NULL,
       'separator' => 0,
-      'parentID' => 'CTRL',
+      'parentID' => $parentKey,
       'navID' => 'discounter',
       'active' => 1,
     ],
     'child' => NULL,
   ];
   // Add child(s) for this extension
-  $params[$AdministerKey]['child']['CTRL']['child']['discounter'] = $child;
+  $params[$AdministerKey]['child'][$parentKey]['child'][] = $child;
 }
