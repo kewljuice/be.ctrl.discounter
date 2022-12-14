@@ -313,11 +313,12 @@ function discounter_civicrm_navigationMenu(&$params) {
       'operator' => NULL,
       'separator' => 0,
       'parentID' => $parentKey,
-      'navID' => 'discounter',
       'active' => 1,
     ],
     'child' => NULL,
   ];
   // Add child(s) for this extension
   $params[$AdministerKey]['child'][$parentKey]['child'][] = $child;
+  $created = array_key_last($params[$AdministerKey]['child'][$parentKey]['child']);
+  $params[$AdministerKey]['child'][$parentKey]['child'][$created]['attributes']['navID'] = $created;
 }
