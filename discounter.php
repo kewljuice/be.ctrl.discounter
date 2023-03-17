@@ -140,7 +140,7 @@ function discounter_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Event_Form_Registration_Register') {
     if ($form->elementExists('discountcode')) {
       // Check 'discounter-exclude' value if we need to exclude discount input.
-      $exclude = Civi::settings()->set('discounter-exclude');
+      $exclude = Civi::settings()->get('discounter-exclude');
       if (isset($exclude) && $exclude) {
         $form->removeElement('discountcode');
         $form->removeElement('_qf_Register_reload');
