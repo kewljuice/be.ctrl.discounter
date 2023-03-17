@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ */
+
 require_once 'discounter.civix.php';
 
 /**
@@ -156,7 +160,6 @@ function discounter_civicrm_buildForm($formName, &$form) {
  *   The file name of the tpl.
  * @param $object
  *   A reference to the page or form object.
- *
  */
 function discounter_civicrm_alterContent(&$content, $context, $tplName, &$object) {
   if ($context == 'form') {
@@ -186,6 +189,7 @@ function discounter_civicrm_alterContent(&$content, $context, $tplName, &$object
  * @param array $amount
  *
  * @throws \CiviCRM_API3_Exception
+ *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_buildAmount/
  */
 function discounter_civicrm_buildAmount($pageType, &$form, &$amount) {
@@ -271,7 +275,7 @@ function discounter_civicrm_navigationMenu(&$params) {
   }
   // If Parent navID doesn't exist create.
   if (!isset($parentKey)) {
-    // Create parent array
+    // Create parent array.
     $parent = [
       'attributes' => [
         'label' => 'CTRL',
@@ -286,10 +290,10 @@ function discounter_civicrm_navigationMenu(&$params) {
       ],
       'child' => NULL,
     ];
-    // Add parent to Administer
+    // Add parent to Administer.
     $params[$AdministerKey]['child']['CTRL'] = $parent;
   }
-  // Create child(s) array
+  // Create child(s) array.
   $child = [
     'attributes' => [
       'label' => 'Discounter',
@@ -304,6 +308,6 @@ function discounter_civicrm_navigationMenu(&$params) {
     ],
     'child' => NULL,
   ];
-  // Add child(s) for this extension
+  // Add child(s) for this extension.
   $params[$AdministerKey]['child']['CTRL']['child']['discounter'] = $child;
 }

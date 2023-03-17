@@ -27,4 +27,3 @@ Re-formats price_set label(s)
 ## Exclude discount input from event registrations
 
 The exclude setting is available at "Administer -> CTRL -> Discounter" or yoursite.org/civicrm/ctrl/discounter.
-

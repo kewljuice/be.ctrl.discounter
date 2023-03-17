@@ -1,10 +1,15 @@
 <?php
 
 require_once 'CRM/Core/Page.php';
-
+/**
+ * Class CRM_discounter_Page_discounter.
+ */
 class CRM_discounter_Page_discounter extends CRM_Core_Page {
 
-  function run() {
+  /**
+   * Function run.
+   */
+  public function run() {
     CRM_Utils_System::setTitle(ts('Discounter'));
     $url = CRM_Utils_System::baseURL() . 'civicrm/ctrl/discounter';
     $this->assign('url', $url);
@@ -37,4 +42,5 @@ class CRM_discounter_Page_discounter extends CRM_Core_Page {
     // render.
     parent::run();
   }
+
 }
